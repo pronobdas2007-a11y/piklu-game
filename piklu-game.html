@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PIKLU - Online Spyfall Card Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9fa;
+            color: #333;
+        }
+
+        .navbar {
+            background: white;
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+
+        .navbar-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-logo {
+            font-size: 28px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            cursor: pointer;
+        }
+
+        .navbar-links {
+            display: flex;
+            gap: 25px;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: #666;
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: #667eea;
+        }
+
+        .nav-btn {
+            background: #667eea;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .nav-btn:hover {
+            background: #5568d3;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 80px 20px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .hero p {
+            font-size: 18px;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 15px 35px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: white;
+            color: #667eea;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-secondary:hover {
+            background: white;
+            color: #667eea;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .section-title {
+            font-size: 36px;
+            font-weight: bold;
+            margin: 40px 0 30px;
+            text-align: center;
+            color: #333;
+        }
+
+        /* GAME PAGE */
+        .game-container {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            margin: 30px auto;
+            max-width: 600px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .game-title {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 25px;
+            color: #333;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .button-group .btn {
+            flex: 1;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .player-count-selector {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .count-btn {
+            flex: 1;
+            min-width: 60px;
+            padding: 10px;
+            border: 2px solid #ddd;
+            background: white;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .count-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .game-info {
+            background: #e3f2fd;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+            font-size: 14px;
+            color: #1565c0;
+        }
+
+        .room-code {
+            font-size: 36px;
+            font-weight: bold;
+            color: #667eea;
+            text-align: center;
+            letter-spacing: 4px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .copy-btn {
+            width: 100%;
+            padding: 12px;
+            background: #f0f0f0;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #667eea;
+            transition: all 0.3s;
+        }
+
+        .copy-btn:hover {
+            background: #e0e0e0;
+            border-color: #667eea;
+        }
+
+        .card-display {
+            margin: 30px 0;
+            text-align: center;
+            animation: cardFlip 0.8s ease;
+        }
+
+        @keyframes cardFlip {
+            0% {
+                opacity: 0;
+                transform: rotateY(90deg);
+            }
+            100% {
+                opacity: 1;
+                transform: rotateY(0);
+            }
+        }
+
+        .card {
+            background: white;
+            border: 3px solid #667eea;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            min-height: 280px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .card-spy {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+            color: white;
+            border: none;
+        }
+
+        .card-location {
+            background: linear-gradient(135deg, #f5deb3 0%, #deb887 100%);
+            border: 3px solid #8b7355;
+        }
+
+        .card-title {
+            font-size: 14px;
+            opacity: 0.7;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .card-content {
+            font-size: 42px;
+            font-weight: bold;
+            text-align: center;
+            word-wrap: break-word;
+        }
+
+        .card-location .card-content {
+            color: #5d4037;
+        }
+
+        .card-spy .card-content {
+            color: white;
+        }
+
+        .player-name {
+            font-size: 12px;
+            margin-top: 20px;
+            opacity: 0.6;
+        }
+
+        .back-btn {
+            width: 100%;
+            padding: 12px;
+            margin-top: 20px;
+            background: #f0f0f0;
+            color: #333;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #e0e0e0;
+        }
+
+        .info-text {
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            color: #666;
+            text-align: center;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* RULEBOOK PAGE */
+        .rulebook {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            margin: 30px auto;
+            max-width: 800px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .rule-section {
+            margin-bottom: 35px;
+        }
+
+        .rule-section h3 {
+            font-size: 22px;
+            color: #667eea;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .rule-section p {
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        .rule-section ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        .rule-section li {
+            margin-bottom: 8px;
+            line-height: 1.6;
+            color: #555;
+        }
+
+        .locations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .location-card {
+            background: #f5deb3;
+            border: 2px solid #8b7355;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            font-weight: 600;
+            color: #5d4037;
+        }
+
+        /* PRODUCT PAGE */
+        .product-section {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            margin: 30px auto;
+            max-width: 1000px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+            margin: 40px 0;
+        }
+
+        .product-image {
+            text-align: center;
+        }
+
+        .product-image img {
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .product-info h3 {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .product-info p {
+            color: #666;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+
+        .coming-soon {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            color: #856404;
+        }
+
+        .coming-soon strong {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        /* SUBSCRIPTION FORM */
+        .subscription-form {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 15px;
+            margin: 30px 0;
+        }
+
+        .subscription-form h3 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .subscription-form p {
+            text-align: center;
+            margin-bottom: 25px;
+            opacity: 0.95;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .subscription-form input {
+            padding: 12px 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .subscription-form .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .subscription-form button {
+            grid-column: 1 / -1;
+            background: white;
+            color: #667eea;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 16px;
+        }
+
+        .subscription-form button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        /* FOOTER */
+        .footer {
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 30px 20px;
+            margin-top: 60px;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .navbar-links {
+                gap: 15px;
+                font-size: 14px;
+            }
+
+            .hero h1 {
+                font-size: 36px;
+            }
+
+            .hero p {
+                font-size: 16px;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+            }
+
+            .hero-buttons .btn {
+                width: 100%;
+            }
+
+            .product-grid {
+                grid-template-columns: 1fr;
+                gap: 25px;
+            }
+
+            .section-title {
+                font-size: 28px;
+            }
+
+            .game-container {
+                padding: 25px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .locations-grid {
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            }
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: none;
+        }
+
+        .error.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <!-- NAVBAR -->
+    <div class="navbar">
+        <div class="navbar-content">
+            <div class="navbar-logo" onclick="switchSection('home')">🎯 PIKLU</div>
+            <div class="navbar-links">
+                <a class="nav-link active" onclick="switchSection('home')">Home</a>
+                <a class="nav-link" onclick="switchSection('play')">Play Game</a>
+                <a class="nav-link" onclick="switchSection('rules')">Rules</a>
+                <a class="nav-link" onclick="switchSection('product')">Physical Copy</a>
+                <button class="nav-btn" onclick="switchSection('play')">Start Game</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- HOME PAGE -->
+    <div id="home" class="section active">
+        <div class="hero">
+            <h1>🎮 PIKLU</h1>
+            <p>The Ultimate Online Spyfall Card Game</p>
+            <p>Play with friends on Discord • No physical cards needed • Pure deception!</p>
+            <div class="hero-buttons">
+                <button class="btn btn-primary" onclick="switchSection('play')">Start Game Now</button>
+                <button class="btn btn-secondary" onclick="switchSection('rules')">How to Play</button>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="section-title">Game Features</div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; margin-bottom: 60px;">
+                <div style="text-align: center;">
+                    <div style="font-size: 48px; margin-bottom: 15px;">👥</div>
+                    <h3 style="font-size: 18px; margin-bottom: 10px;">3-8+ Players</h3>
+                    <p style="color: #666;">Play with as many friends as you want!</p>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 48px; margin-bottom: 15px;">🕵️</div>
+                    <h3 style="font-size: 18px; margin-bottom: 10px;">Auto Spy Assignment</h3>
+                    <p style="color: #666;">Spies are randomly selected automatically</p>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 48px; margin-bottom: 15px;">📱</div>
+                    <h3 style="font-size: 18px; margin-bottom: 10px;">Play Anywhere</h3>
+                    <p style="color: #666;">Mobile friendly, play on any device</p>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 48px; margin-bottom: 15px;">🎨</div>
+                    <h3 style="font-size: 18px; margin-bottom: 10px;">Beautiful Design</h3>
+                    <p style="color: #666;">Professional custom card designs</p>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 48px; margin-bottom: 15px;">🔐</div>
+                    <h3 style="font-size: 18px; margin-bottom: 10px;">Secret Cards</h3>
+                    <p style="color: #666;">Only you see your card, perfect deception!</p>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 48px; margin-bottom: 15px;">🎤</div>
+                    <h3 style="font-size: 18px; margin-bottom: 10px;">Discord Ready</h3>
+                    <p style="color: #666;">Conduct games via Discord voice chat</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PLAY GAME PAGE -->
+    <div id="play" class="section">
+        <div class="container">
+            <div style="margin-top: 40px;">
+                <div id="playHome" class="game-container" style="display: block;">
+                    <div class="game-title">🎮 PIKLU Game</div>
+                    <div class="button-group">
+                        <button class="btn btn-primary" style="flex: 1;" onclick="showGameStep('create')">Create Room</button>
+                        <button class="btn btn-primary" style="flex: 1;" onclick="showGameStep('join')">Join Room</button>
+                    </div>
+                    <div class="info-text">
+                        Create a room code, share it on Discord, and let your friends join. Each player will secretly see their role on their own device!
+                    </div>
+                </div>
+
+                <div id="createStep" class="game-container" style="display: none;">
+                    <div class="game-title">Create Game Room</div>
+                    <label>Select Number of Players:</label>
+                    <div class="player-count-selector">
+                        <button class="count-btn" onclick="selectPlayers(3)">3</button>
+                        <button class="count-btn" onclick="selectPlayers(4)">4</button>
+                        <button class="count-btn" onclick="selectPlayers(5)">5</button>
+                        <button class="count-btn" onclick="selectPlayers(6)">6</button>
+                        <button class="count-btn" onclick="selectPlayers(7)">7</button>
+                        <button class="count-btn" onclick="selectPlayers(8)">8+</button>
+                    </div>
+                    <div id="gameInfo" class="game-info" style="display: none;"></div>
+                    <button class="btn btn-primary" id="createBtn" style="width: 100%; display: none;" onclick="createRoom()">Create Room</button>
+                    <button class="back-btn" onclick="showGameStep('home')">Back</button>
+                </div>
+
+                <div id="roomCodeStep" class="game-container" style="display: none;">
+                    <div class="game-title">✅ Room Created!</div>
+                    <p style="text-align: center; color: #666; margin-bottom: 20px;">Share this code with your friends on Discord:</p>
+                    <div class="room-code" id="displayCode"></div>
+                    <button class="copy-btn" onclick="copyCode()">📋 Copy Room Code</button>
+                    <div class="info-text">
+                        Players will enter this code on their device to join your game.
+                    </div>
+                    <button class="back-btn" onclick="showGameStep('home')">Create New Room</button>
+                </div>
+
+                <div id="joinStep" class="game-container" style="display: none;">
+                    <div class="game-title">Join Game Room</div>
+                    <div class="input-group">
+                        <label>Enter Room Code:</label>
+                        <input type="text" id="roomCodeInput" placeholder="e.g., ABC123" maxlength="6" style="text-transform: uppercase;">
+                    </div>
+                    <div class="input-group">
+                        <label>Your Name:</label>
+                        <input type="text" id="playerName" placeholder="Enter your name">
+                    </div>
+                    <div class="error" id="errorMsg"></div>
+                    <button class="btn btn-primary" style="width: 100%;" onclick="joinRoom()">Join Game</button>
+                    <button class="back-btn" onclick="showGameStep('home')">Back</button>
+                </div>
+
+                <div id="gameCardStep" class="game-container" style="display: none;">
+                    <div class="game-title">🤫 Your Secret Card</div>
+                    <p style="text-align: center; color: #999; font-size: 12px; margin-bottom: 20px;">Hide this from other players!</p>
+                    <div class="card-display">
+                        <div id="cardElement" class="card"></div>
+                    </div>
+                    <div class="info-text">
+                        ✨ This is your secret! Don't show it to anyone else.<br>
+                        🎤 Go to Discord and start the game with your friends!<br>
+                        The spy will try to blend in, others try to find the spy!
+                    </div>
+                    <button class="back-btn" onclick="showGameStep('home')">Leave Game</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RULES PAGE -->
+    <div id="rules" class="section">
+        <div class="container">
+            <div class="section-title">📖 How to Play PIKLU</div>
+            <div class="rulebook">
+                <div class="rule-section">
+                    <h3>🎯 Objective</h3>
+                    <p>The objective is simple - find the spy! Regular players know the secret location and must identify who among them is the spy. The spy doesn't know the location and must deduce what it is while remaining undetected.</p>
+                </div>
+
+                <div class="rule-section">
+                    <h3>👥 Player Setup</h3>
+                    <ul>
+                        <li><strong>3-4 Players:</strong> 1 Spy + 2-3 Citizens</li>
+                        <li><strong>5-6 Players:</strong> 2 Spies + 3-4 Citizens</li>
+                        <li><strong>7-8 Players:</strong> 3 Spies + 4-5 Citizens</li>
+                        <li><strong>9+ Players:</strong> 3 Spies + Rest are Citizens</li>
+                    </ul>
+                </div>
+
+                <div class="rule-section">
+                    <h3>🗺️ Available Locations</h3>
+                    <div class="locations-grid">
+                        <div class="location-card">ট্রেন স্টেশন</div>
+                        <div class="location-card">ব্যাংক</div>
+                        <div class="location-card">চিড়িয়াখানা</div>
+                        <div class="location-card">লাইব্রেরি</div>
+                        <div class="location-card">অফিস</div>
+                        <div class="location-card">পুলিশ স্টেশন</div>
+                        <div class="location-card">বিমানঘর</div>
+                        <div class="location-card">সাবমেরিন</div>
+                        <div class="location-card">আন্তর্জাতিক মহাকাশ স্টেশন</div>
+                        <div class="location-card">গ্যাস স্টেশন</div>
+                        <div class="location-card">কনসার্ট হল</div>
+                        <div class="location-card">ব্যাংক</div>
+                    </div>
+                </div>
+
+                <div class="rule-section">
+                    <h3>🎮 Game Play</h3>
+                    <p><strong>Step 1:</strong> Everyone joins and gets their secret card. They see the location EXCEPT the spy who sees the SPY card instead.</p>
+                    <p><strong>Step 2:</strong> Everyone goes to Discord call. Players take turns asking each other questions (via voice chat) to identify the spy.</p>
+                    <p><strong>Step 3:</strong> The spy must listen carefully and try to figure out the location while pretending to know it.</p>
+                    <p><strong>Step 4:</strong> After discussion, everyone votes to eliminate someone they think is the spy.</p>
+                    <p><strong>Step 5:</strong> The player with the most votes is eliminated and revealed.</p>
+                </div>
+
+                <div class="rule-section">
+                    <h3>🏆 Winning Conditions</h3>
+                    <ul>
+                        <li><strong>Citizens Win:</strong> If they successfully identify and eliminate all the spies</li>
+                        <li><strong>Spies Win:</strong> If they remain hidden until the end or get enough votes against non-spies</li>
+                        <li><strong>Spy Wins Alone:</strong> If only one spy remains and majority of players are eliminated</li>
+                    </ul>
+                </div>
+
+                <div class="rule-section">
+                    <h3>💡 Tips & Strategy</h3>
+                    <ul>
+                        <li>Ask specific questions about the location to catch the spy</li>
+                        <li>If you're the spy, ask general questions that could apply to any location</li>
+                        <li>Pay attention to how people answer - inconsistencies reveal the spy!</li>
+                        <li>Build alliances with trusted players</li>
+                        <li>The spy might pretend to know the location - listen for suspicious hints!</li>
+                    </ul>
+                </div>
+
+                <div class="rule-section">
+                    <h3>⏱️ Game Duration</h3>
+                    <p>A typical game lasts <strong>8-12 minutes</strong>, including setup time.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PRODUCT PAGE -->
+    <div id="product" class="section">
+        <div class="container">
+            <div class="section-title">🎁 Get the Physical Copy!</div>
+            <div class="product-section">
+                <h3 style="text-align: center; font-size: 28px; color: #667eea; margin-bottom: 30px;">PIKLU Card Game - Physical Edition</h3>
+                
+                <div class="product-grid">
+                    <div class="product-image">
+                        <img src="file:///mnt/user-data/uploads/final_box.png" alt="PIKLU Game Box" style="max-width: 100%; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
+                    </div>
+                    <div class="product-info">
+                        <h3>Premium Card Game Edition</h3>
+                        <p>Beautiful handcrafted designs with professional printing quality. Perfect for board game enthusiasts and card game lovers!</p>
+                        
+                        <div class="coming-soon">
+                            <strong>🚀 Coming Soon!</strong>
+                            Limited edition run is in production. Pre-order now to be among the first to get PIKLU!
+                        </div>
+
+                        <p><strong>What's Included:</strong></p>
+                        <ul style="margin-left: 20px; margin-bottom: 20px; color: #666;">
+                            <li>12 Beautiful Location Cards (Bengali & English)</li>
+                            <li>12 Spy Cards</li>
+                            <li>Professional Game Box</li>
+                            <li>Full Rules Booklet (Multiple Languages)</li>
+                            <li>Score Tracking Pad</li>
+                        </ul>
+
+                        <p style="color: #888; font-size: 14px;"><strong>Perfect for:</strong> 3-8+ players • Ages 8+ • Parties, Family Nights, Board Game Cafes</p>
+                    </div>
+                </div>
+
+                <div class="subscription-form">
+                    <h3>📧 Reserve Your Copy</h3>
+                    <p>Be notified as soon as PIKLU physical cards are ready to ship!</p>
+                    
+                    <form onsubmit="handleSubscription(event)">
+                        <div class="form-grid">
+                            <input type="text" id="subName" placeholder="Your Full Name" required>
+                            <input type="email" id="subEmail" placeholder="Your Email Address" required>
+                            <input type="tel" id="subPhone" placeholder="Your Phone Number (Optional)" class="full-width">
+                            <select id="subQuantity" class="full-width" required>
+                                <option value="">How many copies would you like?</option>
+                                <option value="1">1 Copy</option>
+                                <option value="2">2 Copies</option>
+                                <option value="3">3 Copies</option>
+                                <option value="5">5 Copies (Bulk)</option>
+                                <option value="other">More than 5 (Contact us)</option>
+                            </select>
+                            <button type="submit">🔔 Notify Me When Ready</button>
+                        </div>
+                    </form>
+                    
+                    <div class="success-message" id="successMsg">
+                        ✅ Thank you! We'll notify you at <span id="notifyEmail"></span> when PIKLU is ready to ship!
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <p>&copy; 2024 PIKLU - Online Spyfall Card Game | Made with ❤️ for Bangladesh Board Game Community</p>
+    </div>
+
+    <script>
+        const gameState = {
+            roomCode: null,
+            playerCount: null,
+            playerName: null,
+            locations: [
+                'ট্রেন স্টেশন',
+                'ব্যাংক',
+                'চিড়িয়াখানা',
+                'লাইব্রেরি',
+                'অফিস',
+                'পুলিশ স্টেশন',
+                'বিমানঘর',
+                'সাবমেরিন',
+                'আন্তর্জাতিক মহাকাশ স্টেশন',
+                'গ্যাস স্টেশন',
+                'কনসার্ট হল',
+                'ব্যাংক'
+            ]
+        };
+
+        function switchSection(sectionId) {
+            document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+            
+            document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        function showGameStep(step) {
+            document.getElementById('playHome').style.display = 'none';
+            document.getElementById('createStep').style.display = 'none';
+            document.getElementById('roomCodeStep').style.display = 'none';
+            document.getElementById('joinStep').style.display = 'none';
+            document.getElementById('gameCardStep').style.display = 'none';
+
+            if (step === 'home') {
+                document.getElementById('playHome').style.display = 'block';
+            } else if (step === 'create') {
+                document.getElementById('createStep').style.display = 'block';
+            } else if (step === 'join') {
+                document.getElementById('joinStep').style.display = 'block';
+            }
+        }
+
+        function generateRoomCode() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let code = '';
+            for (let i = 0; i < 6; i++) {
+                code += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return code;
+        }
+
+        function getSpyCount(playerCount) {
+            if (playerCount <= 4) return 1;
+            if (playerCount <= 6) return 2;
+            return 3;
+        }
+
+        function selectPlayers(count) {
+            gameState.playerCount = count;
+            document.querySelectorAll('.count-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            const spyCount = getSpyCount(count);
+            document.getElementById('gameInfo').innerHTML = `<strong>Game Setup:</strong><br>${count} players • ${spyCount} spy/spies • Duration: ~10 mins`;
+            document.getElementById('gameInfo').style.display = 'block';
+            document.getElementById('createBtn').style.display = 'block';
+        }
+
+        function createRoom() {
+            gameState.roomCode = generateRoomCode();
+            document.getElementById('displayCode').textContent = gameState.roomCode;
+            document.getElementById('roomCodeStep').style.display = 'block';
+            document.getElementById('createStep').style.display = 'none';
+        }
+
+        function copyCode() {
+            navigator.clipboard.writeText(gameState.roomCode).then(() => {
+                alert('✅ Room code copied to clipboard!');
+            });
+        }
+
+        function joinRoom() {
+            const code = document.getElementById('roomCodeInput').value.toUpperCase();
+            const name = document.getElementById('playerName').value;
+            const errorMsg = document.getElementById('errorMsg');
+
+            errorMsg.classList.remove('show');
+
+            if (!code) {
+                errorMsg.textContent = '❌ Please enter a room code!';
+                errorMsg.classList.add('show');
+                return;
+            }
+
+            if (!name) {
+                errorMsg.textContent = '❌ Please enter your name!';
+                errorMsg.classList.add('show');
+                return;
+            }
+
+            gameState.playerName = name;
+            gameState.roomCode = code;
+
+            const isSpy = Math.random() < 0.3;
+            assignRole(isSpy);
+        }
+
+        function assignRole(isSpy) {
+            const locations = gameState.locations;
+            const randomLocation = locations[Math.floor(Math.random() * locations.length)];
+            
+            const roleContent = isSpy ? 'গয়েন্দা' : randomLocation;
+            const roleType = isSpy ? 'spy' : 'location';
+
+            showGameCard(roleContent, roleType);
+        }
+
+        function showGameCard(content, type) {
+            const cardElement = document.getElementById('cardElement');
+            cardElement.className = `card card-${type}`;
+
+            const cardTitle = type === 'spy' ? '🕵️ আপনি গয়েন্দা!' : '📍 আপনার অবস্থান:';
+            const cardHTML = `
+                <div class="card-title">${cardTitle}</div>
+                <div class="card-content">${content}</div>
+                <div class="player-name">• ${gameState.playerName}</div>
+            `;
+
+            cardElement.innerHTML = cardHTML;
+            document.getElementById('joinStep').style.display = 'none';
+            document.getElementById('gameCardStep').style.display = 'block';
+        }
+
+        function handleSubscription(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('subName').value;
+            const email = document.getElementById('subEmail').value;
+            const phone = document.getElementById('subPhone').value;
+            const quantity = document.getElementById('subQuantity').value;
+
+            // IMPORTANT: Replace 'your_email@gmail.com' with your actual email
+            // Setup instructions:
+            // 1. Go to formspree.io
+            // 2. Create new form with your email
+            // 3. Copy the form ID and replace 'FORMSPREE_ID' below
+
+            const formData = new FormData();
+            formData.append('name', name);
+            formData.append('email', email);
+            formData.append('phone', phone || 'Not provided');
+            formData.append('quantity', quantity);
+
+            // Send to Formspree - REPLACE with your Formspree endpoint
+            fetch('https://formspree.io/f/YOUR_FORMSPREE_ID', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    document.getElementById('notifyEmail').textContent = email;
+                    document.getElementById('successMsg').classList.add('show');
+                    
+                    // Clear form
+                    setTimeout(() => {
+                        document.getElementById('subName').value = '';
+                        document.getElementById('subEmail').value = '';
+                        document.getElementById('subPhone').value = '';
+                        document.getElementById('subQuantity').value = '';
+                        document.getElementById('successMsg').classList.remove('show');
+                    }, 5000);
+                } else {
+                    alert('Error sending form. Please try again.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Connection error. Please check your internet and try again.');
+            });
+        }
+
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const joinStep = document.getElementById('joinStep');
+                if (joinStep.style.display === 'block') {
+                    joinRoom();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
